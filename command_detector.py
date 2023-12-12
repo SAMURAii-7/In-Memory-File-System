@@ -1,4 +1,4 @@
-from file_system import cat, cd, cp, echo, grep, ls, mkdir, mv, rm, touch
+from commands import cat, cd, cp, echo, grep, ls, mkdir, mv, rm, touch
 
 
 def detect_command(current_dir, user_input):
