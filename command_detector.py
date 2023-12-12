@@ -12,13 +12,11 @@ def detect_command(current_dir, user_input):
         current_dir = cd(current_dir, directory_name)
     elif command == "ls":
         if args:
-            # If arguments are provided, assume it's a specified directory
             specified_dir = args[0]
             specified_dir_obj = cd(current_dir, specified_dir)
             ls(specified_dir_obj)
             cd(specified_dir_obj, current_dir.name)
         else:
-            # If no arguments, list contents of the current directory
             ls(current_dir)
     elif command == "grep":
         if len(args) < 2:

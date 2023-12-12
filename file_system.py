@@ -77,7 +77,6 @@ def getParent(current_dir):
     if current_dir.parent:
         return current_dir.parent
     else:
-        # If current_dir is the root, return itself
         return current_dir
 
 
@@ -172,22 +171,6 @@ def mv(current_dir, source, destination):
         print(f"Error: Source '{source}' not found.")
 
 
-# def cp(current_dir, source, destination):
-#     if source in current_dir.children:
-#         item = current_dir.children[source]
-#         if isinstance(item, Directory):
-#             # Copying a directory
-#             new_directory = item.copy()
-#             current_dir.children[destination] = new_directory
-#             print(f"Copied directory '{source}' to '{destination}'.")
-#         else:
-#             # Copying a file
-#             current_dir.children[destination] = item
-#             print(f"Copied file '{source}' to '{destination}'.")
-#     else:
-#         print(f"Error: Source '{source}' not found.")
-
-
 def cp(current_dir, source, destination):
     if "/" not in source:
         source_dir = current_dir
@@ -234,9 +217,9 @@ def save_state(file_system, file_path):
     try:
         with open(file_path, "w") as file:
             json.dump(
-                file_system.copy().__dict__,
+                file_system,
                 file,
-                default=lambda o: o.__dict__,
+                default=serialize_directory,
                 indent=4,
             )
         print(f"File system state saved to '{file_path}'.")
@@ -244,26 +227,47 @@ def save_state(file_system, file_path):
         print(f"Error: Unable to save file system state. {str(e)}")
 
 
+def serialize_directory(directory):
+    if isinstance(directory, Directory):
+        serialized_dir = {
+            "name": directory.name,
+            "children": {
+                name: serialize_directory(item)
+                for name, item in directory.children.items()
+            },
+        }
+        if directory.parent:
+            serialized_dir["parent"] = directory.parent.name
+        return serialized_dir
+    elif isinstance(directory, str):
+        return directory
+
+
 def load_state(file_system, file_path):
     try:
         with open(file_path, "r") as file:
             data = json.load(file)
-            # Clear existing file system
             file_system.children.clear()
-            # Load the new file system structure
             load_directory(file_system, data)
         print(f"File system state loaded from '{file_path}'.")
+    except FileNotFoundError:
+        print(f"Error: File '{file_path}' not found.")
+    except json.JSONDecodeError as e:
+        print(f"Error: Unable to decode JSON in '{file_path}'. {str(e)}")
     except Exception as e:
         print(f"Error: Unable to load file system state. {str(e)}")
 
 
 def load_directory(directory, data):
-    for name, item_data in data["children"].items():
-        if item_data.get("children"):
-            # If the item is a directory, recursively load its contents
-            new_directory = Directory(name)
-            load_directory(new_directory, item_data)
-            directory.children[name] = new_directory
-        else:
-            # If the item is a file, simply add it
-            directory.children[name] = item_data
+    if isinstance(data, dict):
+        for name, item_data in data.get("children", {}).items():
+            if item_data is None:
+                directory.children[name] = ""
+            elif isinstance(item_data, (str, int, float, bool)):
+                directory.children[name] = item_data
+            elif isinstance(item_data, dict):
+                new_directory = Directory(name)
+                load_directory(new_directory, item_data)
+                directory.children[name] = new_directory
+    else:
+        directory.children[data["name"]] = data["children"]

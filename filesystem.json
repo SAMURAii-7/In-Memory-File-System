@@ -1,0 +1,12 @@
+{
+    "name": "/",
+    "children": {
+        "sub": {
+            "name": "sub",
+            "children": {
+                "test.txt": "hello world\nsky is blue"
+            },
+            "parent": "/"
+        }
+    }
+}
