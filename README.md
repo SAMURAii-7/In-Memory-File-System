@@ -39,11 +39,7 @@ cd in-memory-file-system
 
 ```bash
 source venv/bin/activate # Linux/Mac
-```
-
-OR
-
-```bash
+# OR
 venv\Scripts\activate # Windows
 ```
 
