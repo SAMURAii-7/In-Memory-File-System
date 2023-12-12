@@ -39,15 +39,7 @@ git clone https://github.com/SAMURAii-7/In-Memory-File-System.git
 cd in-memory-file-system
 ```
 
-3. Activate the virtual environment:
-
-```bash
-source venv/bin/activate # Linux/Mac
-# OR
-venv\Scripts\activate # Windows
-```
-
-4. Run the program:
+3. Run the program:
 
 ### Normal Mode
 
