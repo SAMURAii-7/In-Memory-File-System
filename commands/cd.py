@@ -7,7 +7,7 @@ def cd(current_dir, target_dir):
         return getParent(current_dir)
     elif target_dir == "/" or target_dir == "~":
         root = getParent(current_dir)
-        while root.name != "/":
+        while root and root.name != "/":
             root = getParent(root)
         return root
     elif target_dir.count("/") >= 1:
