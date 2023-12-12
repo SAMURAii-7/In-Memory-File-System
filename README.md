@@ -15,6 +15,10 @@ This is a simple in-memory file system written in Python. It is a simplified ver
 -   `cp`: copy a file or directory
 -   `rm`: remove a file or directory
 
+## Implementation
+
+The core data structure is the `Directory` class, which models file system directories and holds a map of children (subdirectories or files). This class forms a `tree`-like structure where each directory has a reference to its parent, enabling easy navigation from child to parent. The get_absolute_path function efficiently traverses the file system to locate a specific directory based on an absolute path. I have implemented robust error handling for scenarios like invalid paths and insufficient command arguments. Notably, improvements include enhancing the `ls` command to display full item paths, refining the `cd` command to support both absolute and relative paths, and addressing formatting issues in commands like `echo`. I have also added the `grep` command which searches for a string in a file and prints the matching lines. The program supports saving the state of the file system to a JSON file and loading it back.
+
 ### It also supports storing the state of the file system in a JSON file and loading it back.
 
 ## Prerequisites
