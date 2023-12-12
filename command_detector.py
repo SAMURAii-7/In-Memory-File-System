@@ -22,8 +22,8 @@ def detect_command(current_dir, user_input):
         if len(args) < 2:
             print("Error: Insufficient arguments for grep.")
             return current_dir
-        file_name = args[0]
-        pattern = args[1]
+        pattern = args[0]
+        file_name = args[1]
         if (pattern[0] == '"' and pattern[-1] == '"') or (
             pattern[0] == "'" and pattern[-1] == "'"
         ):
