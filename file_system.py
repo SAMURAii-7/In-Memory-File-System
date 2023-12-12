@@ -162,6 +162,7 @@ def mv(current_dir, source, destination):
         destination_dir = get_last_child(current_dir, destination)
     if destination_dir == -1:
         return
+
     if source_name in source_dir.children:
         item = source_dir.children[source_name]
         del source_dir.children[source_name]
@@ -171,18 +172,52 @@ def mv(current_dir, source, destination):
         print(f"Error: Source '{source}' not found.")
 
 
+# def cp(current_dir, source, destination):
+#     if source in current_dir.children:
+#         item = current_dir.children[source]
+#         if isinstance(item, Directory):
+#             # Copying a directory
+#             new_directory = item.copy()
+#             current_dir.children[destination] = new_directory
+#             print(f"Copied directory '{source}' to '{destination}'.")
+#         else:
+#             # Copying a file
+#             current_dir.children[destination] = item
+#             print(f"Copied file '{source}' to '{destination}'.")
+#     else:
+#         print(f"Error: Source '{source}' not found.")
+
+
 def cp(current_dir, source, destination):
-    if source in current_dir.children:
-        item = current_dir.children[source]
-        if isinstance(item, Directory):
-            # Copying a directory
-            new_directory = item.copy()
-            current_dir.children[destination] = new_directory
-            print(f"Copied directory '{source}' to '{destination}'.")
+    if "/" not in source:
+        source_dir = current_dir
+        source_name = source
+    else:
+        if source.startswith("/"):
+            if source.endswith("/"):
+                parts = source[1:-1].split("/")
+            else:
+                parts = source[1:].split("/")
         else:
-            # Copying a file
-            current_dir.children[destination] = item
-            print(f"Copied file '{source}' to '{destination}'.")
+            parts = source.split("/")
+        source_dir = get_last_child(current_dir, "/".join(parts[:-1]))
+        if source_dir == -1:
+            return
+        source_name = parts[-1]
+    if destination.startswith("/"):
+        if destination.endswith("/"):
+            destination_dir = get_last_child(current_dir, destination[1:-1])
+        else:
+            destination_dir = get_last_child(current_dir, destination[1:])
+    else:
+        destination_dir = get_last_child(current_dir, destination)
+    if destination_dir == -1:
+        return
+
+    if source_name in source_dir.children:
+        item = source_dir.children[source_name]
+        destination_dir.children[source_name] = item
+        print(f"Copied '{source}' to '{destination}'.")
     else:
         print(f"Error: Source '{source}' not found.")
 
